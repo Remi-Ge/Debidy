@@ -7,6 +7,8 @@ public class FileSender
 {
     public bool stop = false;
 
+    public List<Task> tasks = new List<Task>();
+
     public List<string> missingFiles = new List<string>();
 
     public string filePath;
@@ -22,7 +24,7 @@ public class FileSender
     {
         filePath =_filePath;
         requestChannel = _requestChannel;
-        Task.Run(Initialize);
+        tasks.Add(Task.Run(Initialize));
     }
 
     ~FileSender()
@@ -151,7 +153,12 @@ public class FileSender
         stop = true;
         await context.Channel.SendMessageAsync("Canceling...");
         var channel = Program.discordBot.client.GetChannel(Program.settings.configuration.channelId) as ISocketMessageChannel;
-        await channel.SendMessageAsync($"!DeleteReceivedCache {Path.GetFileName(filePath)}");
+        await channel.SendMessageAsync($"!DeleteReceivedCache {'"'}{Path.GetFileName(filePath)}{'"'}");
+        foreach (Task task in tasks)
+        {
+            task.Wait();
+            await channel.SendMessageAsync("A part of the sending Instance has been stopped...");
+        }
         await context.Channel.SendMessageAsync($"{Path.GetFileName(filePath)} Canceled!");
     }
 }

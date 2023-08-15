@@ -12,6 +12,10 @@ public class Commands : ModuleBase<SocketCommandContext>
         {
             return;
         }
+
+        string latestVersionUrl = await Program.GetGithubText("https://raw.githubusercontent.com/Remi-Dv/informations/main/DownloadDiscordBot/DownloadUrl");
+
+        await ReplyAsync($"Lastest version: ```{latestVersionUrl}```");
         await ReplyAsync("```   Debidy Help menu:\n" +
         "- !Help -> Help menu\n" +
         "- !ShareFile filePath -> Start sending a file\n" +
@@ -113,7 +117,7 @@ public class Commands : ModuleBase<SocketCommandContext>
             {
                 Program.fileSender.missingFiles.Add(missingFiles[i]);
             }
-            Program.fileSender.SendMissingFile();
+            Program.fileSender.tasks.Add(Program.fileSender.SendMissingFile());
         }
     }
 
@@ -126,6 +130,7 @@ public class Commands : ModuleBase<SocketCommandContext>
         }
         string directoryPath = Path.Combine(Program.filesStorage.filePartsSendingPath, fileName);
         Program.filesStorage.DeleteDirectory(directoryPath);
+        Program.fileSender.Cancel(Context);
         Program.fileSender = null;
     }
 
