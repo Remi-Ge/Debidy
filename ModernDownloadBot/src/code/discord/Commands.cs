@@ -117,7 +117,7 @@ public class Commands : ModuleBase<SocketCommandContext>
             {
                 Program.fileSender.missingFiles.Add(missingFiles[i]);
             }
-            Program.fileSender.tasks.Add(Program.fileSender.SendMissingFile());
+            Program.fileSender.tasks.Add(Task.Run(Program.fileSender.SendMissingFile));
         }
     }
 

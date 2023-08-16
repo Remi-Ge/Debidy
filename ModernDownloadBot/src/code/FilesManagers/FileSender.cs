@@ -7,6 +7,8 @@ public class FileSender
 {
     public bool stop = false;
 
+    public bool canSend = true;
+
     public List<Task> tasks = new List<Task>();
 
     public List<string> missingFiles = new List<string>();
@@ -97,7 +99,7 @@ public class FileSender
             }
             else
             {
-                await message.ModifyAsync(x => x.Content = $"{((float)(actualSize) / (float)GetFileSize() * 100):N2}% Sent...");
+                await message.ModifyAsync(x => x.Content = $"{((float)(actualSize) / GetFileSize() * 100):N2}% Sent...");
             }
 
             if (GetFileSize() <= actualSize)
@@ -114,13 +116,19 @@ public class FileSender
             {
                 return;
             }
-            await channel.SendMessageAsync("!Assemble " + '"' + Path.GetFileName(filePath).Replace(" ", "_") + '"' + " " + (chunkIndex + 1));
+
+            if (canSend)
+            {
+                await channel.SendMessageAsync("!Assemble " + '"' + Path.GetFileName(filePath).Replace(" ", "_") + '"' + " " + (chunkIndex + 1));
+            }
+            
             await Task.Delay(20000);
         }
     }
 
     public async Task SendMissingFile()
     {
+        canSend = false;
         var channel = Program.discordBot.client.GetChannel(Program.settings.configuration.channelId) as ISocketMessageChannel;
 
         for (int i = 0; i < missingFiles.Count; i++)
@@ -138,6 +146,8 @@ public class FileSender
             {
                 //Cancel le downloads
             }
+
+            canSend = true;
         }
 
         missingFiles = new List<string>();
