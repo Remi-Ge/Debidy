@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using System.Text.RegularExpressions;
 using System.Globalization;
 
 public class Commands : ModuleBase<SocketCommandContext>
@@ -14,8 +15,10 @@ public class Commands : ModuleBase<SocketCommandContext>
         }
 
         string latestVersionUrl = await Program.GetGithubText("https://raw.githubusercontent.com/Remi-Dv/informations/main/DownloadDiscordBot/DownloadUrl");
+        string latestVersion = await Program.GetGithubText("https://raw.githubusercontent.com/Remi-Dv/informations/main/DownloadDiscordBot/LastVersion.txt");
+        latestVersion = Regex.Replace(latestVersion, "[^0-9.]", "");
 
-        await ReplyAsync($"Lastest version: ```{latestVersionUrl}```");
+        await ReplyAsync($"Lastest version ({latestVersion}): ```{latestVersionUrl}```");
         await ReplyAsync("```   Debidy Help menu:\n" +
         "- !Help -> Help menu\n" +
         "- !ShareFile filePath -> Start sending a file\n" +

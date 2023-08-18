@@ -41,17 +41,19 @@ public class DiscordBot
             }
             else
             {
+                ulong botMention = Program.settings.configuration.otherBotId;
+                Console.WriteLine("Gathering Welcome message...");
+                string welcomeMessage = await Program.GetGithubText("https://raw.githubusercontent.com/Remi-Dv/informations/main/DownloadDiscordBot/startMessage.txt");
+                await channel.SendMessageAsync(welcomeMessage);
+                Console.WriteLine();
+                Console.WriteLine("Checking for updates...");
+                await channel.SendMessageAsync(await Program.CheckNewUpdates());
+                Console.WriteLine();
                 if (botAdmin != null)
                 {
                     var mention = botAdmin.Mention;
-                    Console.WriteLine("Gathering Welcome message...");
-                    string welcomeMessage = await Program.GetGithubText("https://raw.githubusercontent.com/Remi-Dv/informations/main/DownloadDiscordBot/startMessage.txt");
-                    await channel.SendMessageAsync(welcomeMessage);
-                    Console.WriteLine();
-                    Console.WriteLine("Checking for updates...");
-                    await channel.SendMessageAsync(await Program.CheckNewUpdates());
-                    Console.WriteLine();
-                    await channel.SendMessageAsync($"The bot started! and {mention} is my admin. !Help for more infos.");
+                    await channel.SendMessageAsync($"The bot started! {mention} is my admin, " +
+                        $"and <@{botMention}> is the other bot. !Help for more infos.");
                 }
                 else
                 {
