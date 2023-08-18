@@ -59,7 +59,7 @@ public class FilesSplitter
         }
         string[] chunkFiles = Directory.GetFiles(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)
         , $"{fileName}.*").Select(Path.GetFileName).ToArray();
-        if (chunkFiles.Length != chunkNumber)
+        if (chunkFiles.Length < chunkNumber)
         {
             List<string> missingFiles = new List<string>();
             for (int i = 0; i < chunkNumber; i++)

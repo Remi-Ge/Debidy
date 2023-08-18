@@ -153,7 +153,9 @@ public class Commands : ModuleBase<SocketCommandContext>
         {
             return;
         }
-        string directoryPath = Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName);
-        Program.filesStorage.DeleteDirectory(directoryPath);
+        Program.downloader.AddCommand(fileName, null, 0, Context);
+
+        //string directoryPath = Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName);
+        //Program.filesStorage.DeleteDirectory(directoryPath);
     }
 }

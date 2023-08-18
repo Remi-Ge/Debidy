@@ -85,7 +85,7 @@ public class Downloader
                 long usedSize = Program.filesStorage.GetDownloadsSize();
                 if (maxSizeMb <= 0)
                 {
-                    context.Channel.SendMessageAsync($"unlimited storage. Storage used: {usedSize}");
+                    await context.Channel.SendMessageAsync($"unlimited storage. Storage used: {usedSize}");
                 }
                 else
                 {
@@ -100,10 +100,15 @@ public class Downloader
                 await Program.filesStorage.DownloadFile(fileUrl, outputFilePath);
                 await context.Message.DeleteAsync();
             }
-            else
+            else if (chunkNumber > 0)
             {
                 string message = FilesSplitter.ReassembleFile(fileName, chunkNumber);
                 await context.Channel.SendMessageAsync(message);
+            }
+            else
+            {
+                string directoryPath = Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName);
+                Program.filesStorage.DeleteDirectory(directoryPath);
             }
         }
     }

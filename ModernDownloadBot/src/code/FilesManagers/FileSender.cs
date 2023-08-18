@@ -133,8 +133,8 @@ public class FileSender
 
         for (int i = 0; i < missingFiles.Count; i++)
         {
-            Console.WriteLine("'"+Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath)
-                    , Path.GetFileName(filePath) + "." + missingFiles[i])+ "'");
+            //Console.WriteLine("'"+Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath)
+            //        , Path.GetFileName(filePath) + "." + missingFiles[i])+ "'");
             if (stop)
             {
                 return;
@@ -169,12 +169,15 @@ public class FileSender
         stop = true;
         await context.Channel.SendMessageAsync("Stopping...");
         var channel = Program.discordBot.client.GetChannel(Program.settings.configuration.channelId) as ISocketMessageChannel;
+
+        await channel.SendMessageAsync($"!DeleteReceivedCache {Path.GetFileName(filePath)}");
+
         foreach (Task task in tasks)
         {
             task.Wait();
             await channel.SendMessageAsync("A part of the sending Instance has been stopped...");
         }
-
+        
         await context.Channel.SendMessageAsync($"{Path.GetFileName(filePath)} Stopped!");
     }
 }

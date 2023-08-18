@@ -17,7 +17,7 @@ public static class Program
         Console.WriteLine($"Welcome to Debidy {programVersion}, a piece of software to share big files with Discord!");
         Console.WriteLine();
 
-        filesStorage = new FilesStorage("MODERN2"); //"Debidy"
+        filesStorage = new FilesStorage("MODERN"); //"Debidy"
         settings = new Settings();
 
         downloader = new Downloader();
