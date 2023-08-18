@@ -37,26 +37,7 @@ public class Commands : ModuleBase<SocketCommandContext>
             if (attachment != null)
             {
                 Program.filesStorage.CreateDirectory(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName));
-                string outputFilePath = Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName, attachment.Filename);
-
-                long maxSizeMb = Program.settings.configuration.maxSizeMb;
-                long usedSize = Program.filesStorage.GetDownloadsSize();
-                if (maxSizeMb <= 0)
-                {
-                    await ReplyAsync($"unlimited storage. Storage used: {usedSize}");
-                }
-                else
-                {
-                    await ReplyAsync(
-                        $"storage used: {(float)usedSize / maxSizeMb * 100:N1}%" +
-                        $", There is {maxSizeMb - usedSize}Mb storage not used");
-                    if (usedSize / maxSizeMb >= 1)
-                    {
-                        await ReplyAsync($"STOCKAGE FULL {Program.discordBot.client.GetUser(Program.settings.configuration.botAdminId).Mention}. PLEASE MOVE FILES FROM THE !DOWNLOADS FOLDER");
-                    }
-                }
-                await Program.filesStorage.DownloadFile(attachment.Url, outputFilePath);
-                await Context.Message.DeleteAsync();
+                Program.downloader.AddCommand(fileName, attachment.Url, 0, Context);
             }
         }
         else
@@ -98,8 +79,7 @@ public class Commands : ModuleBase<SocketCommandContext>
             return;
         }
 
-        string message = FilesSplitter.ReassembleFile(fileName, chunkNumber);
-        await ReplyAsync(message);
+        Program.downloader.AddCommand(fileName, null, chunkNumber, Context);
     }
 
     [Command("Ask")]
@@ -112,6 +92,7 @@ public class Commands : ModuleBase<SocketCommandContext>
         }
         if (Program.fileSender != null)
         {
+            Program.fileSender.missingFiles = new List<string>();
             string[] missingFiles = missingFilesNumber.Split(',');
             for (int i = 0; i < missingFiles.Length; i++)
             {
@@ -129,6 +110,7 @@ public class Commands : ModuleBase<SocketCommandContext>
             return;
         }
         string directoryPath = Path.Combine(Program.filesStorage.filePartsSendingPath, fileName);
+        await ReplyAsync("Deleting Cache...");
         Program.filesStorage.DeleteDirectory(directoryPath);
         Program.fileSender.Cancel(Context);
         Program.fileSender = null;

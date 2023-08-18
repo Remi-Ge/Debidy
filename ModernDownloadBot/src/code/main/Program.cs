@@ -7,6 +7,8 @@ public static class Program
     public static Settings settings;
     public static DiscordBot discordBot;
 
+    public static Downloader downloader;
+
     public static string programVersion = "1.0.0";
 
     public static FileSender fileSender;
@@ -15,8 +17,10 @@ public static class Program
         Console.WriteLine($"Welcome to Debidy {programVersion}, a piece of software to share big files with Discord!");
         Console.WriteLine();
 
-        filesStorage = new FilesStorage("Debidy"); //Debidy
+        filesStorage = new FilesStorage("MODERN2"); //"Debidy"
         settings = new Settings();
+
+        downloader = new Downloader();
 
         //when opened for the first time
         if (filesStorage.FirstTimeOpened())

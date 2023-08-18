@@ -41,7 +41,7 @@ public class FilesStorage
 
     public async Task DownloadFile(string fileURL, string outputFilePath)
     {
-        if (GetDownloadsSize() > Program.settings.configuration.maxSizeMb)
+        if (GetDownloadsSize() > Program.settings.configuration.maxSizeMb && Program.settings.configuration.maxSizeMb > 0)
         {
             return;
         }

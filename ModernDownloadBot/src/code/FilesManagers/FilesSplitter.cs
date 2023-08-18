@@ -46,15 +46,19 @@ public class FilesSplitter
 
     public static string ReassembleFile(string fileName, int chunkNumber)
     {
-        if (!Directory.Exists(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)))
+        if (!Directory.Exists(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)) &&
+            File.Exists(Path.Combine(Program.filesStorage.downloadsPath, fileName)))
         {
-            return "Error there is no files with this name";
+            return "There is no parts of this file downloaded. But there is a file in the download folder so i don't assemble.";
         }
         //string[] chunkFiles = Directory.GetFiles(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)
         //    , $"{fileName}.*");
+        if (!Directory.Exists(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)))
+        {
+            Directory.CreateDirectory(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName));
+        }
         string[] chunkFiles = Directory.GetFiles(Path.Combine(Program.filesStorage.filePartsReceivedPath, fileName)
         , $"{fileName}.*").Select(Path.GetFileName).ToArray();
-        Console.WriteLine(chunkFiles.Length);
         if (chunkFiles.Length != chunkNumber)
         {
             List<string> missingFiles = new List<string>();

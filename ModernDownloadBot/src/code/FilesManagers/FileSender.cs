@@ -133,13 +133,16 @@ public class FileSender
 
         for (int i = 0; i < missingFiles.Count; i++)
         {
+            Console.WriteLine("'"+Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath)
+                    , Path.GetFileName(filePath) + "." + missingFiles[i])+ "'");
             if (stop)
             {
                 return;
             }
-            if (File.Exists(Path.GetFileName(filePath) + "." + missingFiles[i]))
+            if (File.Exists(Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath)
+                , Path.GetFileName(filePath) + "." + missingFiles[i])))
             {
-                await channel.SendFileAsync(Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath)
+                await channel.SendFileAsync(Path.Combine(Program.filesStorage.filePartsSendingPath, Path.GetFileName(filePath).Replace(" ", "_")
                     , Path.GetFileName(filePath) + "." + missingFiles[i]), $"!Give {'"'}{Path.GetFileName(filePath)}{'"'}");
             }
             else
@@ -164,7 +167,7 @@ public class FileSender
     public async void Cancel(SocketCommandContext context)
     {
         stop = true;
-        await context.Channel.SendMessageAsync("Canceling...");
+        await context.Channel.SendMessageAsync("Stopping...");
         var channel = Program.discordBot.client.GetChannel(Program.settings.configuration.channelId) as ISocketMessageChannel;
         foreach (Task task in tasks)
         {
@@ -172,6 +175,6 @@ public class FileSender
             await channel.SendMessageAsync("A part of the sending Instance has been stopped...");
         }
 
-        await context.Channel.SendMessageAsync($"{Path.GetFileName(filePath)} Canceled!");
+        await context.Channel.SendMessageAsync($"{Path.GetFileName(filePath)} Stopped!");
     }
 }
