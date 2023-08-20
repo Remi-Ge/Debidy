@@ -1,7 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using System.Text.RegularExpressions;
-using System.Globalization;
 
 public class Commands : ModuleBase<SocketCommandContext>
 {
@@ -66,6 +65,11 @@ public class Commands : ModuleBase<SocketCommandContext>
         if (!File.Exists(filePath))
         {
             await ReplyAsync("This file doesn't exist!");
+            return;
+        }
+        if (!Regex.IsMatch(Path.GetFileName(filePath), "^[a-zA-Z0-9.]+$"))
+        {
+            await ReplyAsync("error: The file contains others caracters than letters, LETTERS, numbers, dot");
             return;
         }
         SocketTextChannel channel = Program.discordBot.client.GetChannel(Context.Channel.Id) as SocketTextChannel;

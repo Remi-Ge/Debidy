@@ -170,7 +170,7 @@ public class FileSender
         await context.Channel.SendMessageAsync("Stopping...");
         var channel = Program.discordBot.client.GetChannel(Program.settings.configuration.channelId) as ISocketMessageChannel;
 
-        await channel.SendMessageAsync($"!DeleteReceivedCache {Path.GetFileName(filePath)}");
+        await channel.SendMessageAsync($"!DeleteReceivedCache {'"'}{Path.GetFileName(filePath).Replace(" ", "_")}{'"'}");
 
         foreach (Task task in tasks)
         {

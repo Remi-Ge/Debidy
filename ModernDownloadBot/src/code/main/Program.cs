@@ -9,7 +9,7 @@ public static class Program
 
     public static Downloader downloader;
 
-    public static string programVersion = "1.0.0";
+    public static string programVersion = "1.0.4";
 
     public static FileSender fileSender;
     private static void Main(string[] args)
